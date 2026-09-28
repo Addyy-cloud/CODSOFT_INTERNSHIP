@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure File Sharing - Dashboard</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #111827;
+            color: white;
+            margin: 0;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: #1f2937;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        h2 {
+            margin-top: 0;
+        }
+
+        .role {
+            color: #60a5fa;
+            font-weight: bold;
+        }
+
+        input[type="file"] {
+            margin: 15px 0;
+            padding: 10px;
+            background: #374151;
+            border-radius: 6px;
+        }
+
+        button,
+        .logout {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 6px;
+            background: #2563eb;
+            color: white;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        button:hover,
+        .logout:hover {
+            background: #1d4ed8;
+        }
+
+        .file {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #374151;
+            padding: 15px;
+            margin-top: 10px;
+            border-radius: 8px;
+        }
+
+        .file a {
+            color: #60a5fa;
+            text-decoration: none;
+        }
+
+        .empty {
+            color: #9ca3af;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+
+        <div>
+            <h1>🔐 Secure File Sharing</h1>
+            <p>
+                Welcome, <strong>{{ username }}</strong>
+                |
+                Role:
+                <span class="role">{{ role }}</span>
+            </p>
+        </div>
+
+        <a class="logout" href="{{ url_for('logout') }}">
+            Logout
+        </a>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>Upload File</h2>
+
+        <p>
+            Files are encrypted before being stored on the server.
+        </p>
+
+        <form
+            action="{{ url_for('upload') }}"
+            method="POST"
+            enctype="multipart/form-data"
+        >
+
+            <input
+                type="file"
+                name="file"
+                required
+            >
+
+            <br>
+
+            <button type="submit">
+                Encrypt & Upload
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>Available Files</h2>
+
+        {% if files %}
+
+            {% for file in files %}
+
+                <div class="file">
+
+                    <span>
+                        🔒 {{ file }}
+                    </span>
+
+                    {% if file.endswith('.encrypted') %}
+
+                        <a href="{{ url_for('download', filename=file) }}">
+                            Download
+                        </a>
+
+                    {% endif %}
+
+                </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <p class="empty">
+                No files have been uploaded yet.
+            </p>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+</body>
+</html>
